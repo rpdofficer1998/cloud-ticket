@@ -9,10 +9,13 @@ const healthRoutes = require('./routes/health.routes');
 
 const eventRoutes = require('./routes/event.routes');
 
+const orderRoutes = require('./routes/order.routes');
+
 
 app.use(express.json());
 
 app.use('/api/events', eventRoutes);
+app.use('/api/orders', orderRoutes);
 
 
 app.get('/', (req, res) => {
