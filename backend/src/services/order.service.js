@@ -42,7 +42,7 @@ const createOrder = async ({
     const orderResult = await client.query(
         `
         INSERT INTO orders (event_id, customer_name, quantity, status, expires_at)
-        VALUES ($1, $2, $3, 'PENDING', NOW() + INTERVAL '15 minutes')
+        VALUES ($1, $2, $3, 'PENDING', NOW() + INTERVAL '3 minutes')
         RETURNING *
         `,
         [event_id, customer_name, quantity]

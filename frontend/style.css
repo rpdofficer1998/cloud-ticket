@@ -49,3 +49,11 @@ input {
     margin-right: 8px;
     margin-top: 10px;
 }
+
+.hidden {
+    display: none;
+}
+
+button {
+    margin-right: 10px;
+}

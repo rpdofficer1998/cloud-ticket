@@ -1,5 +1,31 @@
 const API_BASE = "http://localhost:3000/api";
 
+/* ---------- Page Navigation ---------- */
+
+function showHomePage() {
+    document.getElementById("home-page").classList.remove("hidden");
+    document.getElementById("events-page").classList.add("hidden");
+    document.getElementById("orders-page").classList.add("hidden");
+}
+
+function showEventsPage() {
+    document.getElementById("home-page").classList.add("hidden");
+    document.getElementById("events-page").classList.remove("hidden");
+    document.getElementById("orders-page").classList.add("hidden");
+
+    loadEvents();
+}
+
+function showOrdersPage() {
+    document.getElementById("home-page").classList.add("hidden");
+    document.getElementById("events-page").classList.add("hidden");
+    document.getElementById("orders-page").classList.remove("hidden");
+
+    loadOrders();
+}
+
+/* ---------- Events ---------- */
+
 async function loadEvents() {
 
     const response = await fetch(`${API_BASE}/events`);
@@ -19,8 +45,14 @@ async function loadEvents() {
             <p>📅 ${event.date}</p>
             <p>🎫 Remaining: ${event.available_tickets}</p>
 
-            <input type="text" id="name-${event.id}" placeholder="Your name">
-            <input type="number" id="qty-${event.id}" value="1" min="1">
+            <input type="text"
+                   id="name-${event.id}"
+                   placeholder="Your name">
+
+            <input type="number"
+                   id="qty-${event.id}"
+                   value="1"
+                   min="1">
 
             <button onclick="bookTicket(${event.id})">
                 Book Ticket
@@ -59,11 +91,110 @@ async function bookTicket(eventId) {
     const result = await response.json();
 
     if (response.ok) {
-        alert("🎉 Booking successful!");
+        alert("🎉 Booking Accepted!");
         loadEvents();
     } else {
         alert(`❌ ${result.message}`);
     }
 }
 
-loadEvents();
+/* ---------- Orders ---------- */
+
+async function loadOrders() {
+
+    const response = await fetch(`${API_BASE}/orders`);
+    const orders = await response.json();
+
+    const container = document.getElementById("orders");
+    container.innerHTML = "";
+
+    orders.forEach(order => {
+
+        const card = document.createElement("div");
+        card.className = "event-card";
+
+        let actionButtons = "";
+
+        if (order.status === "PENDING") {
+
+            actionButtons = `
+                <button onclick="payOrder(${order.id})">
+                    Pay Now
+                </button>
+
+                <button onclick="cancelOrder(${order.id})">
+                    Cancel Order
+                </button>
+            `;
+        }
+
+        card.innerHTML = `
+            <h3>Order #${order.id}</h3>
+            <p>🎫 Event ID: ${order.event_id}</p>
+            <p>👤 Customer: ${order.customer_name}</p>
+            <p>🔢 Quantity: ${order.quantity}</p>
+            <p>📌 Status: <strong>${order.status}</strong></p>
+
+            ${actionButtons}
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+async function cancelOrder(orderId) {
+
+    const confirmed =
+        confirm("Cancel this order?");
+
+    if (!confirmed) return;
+
+    const response = await fetch(
+        `${API_BASE}/orders/${orderId}/cancel`,
+        {
+            method: "POST"
+        }
+    );
+
+    const result = await response.json();
+
+    if (response.ok) {
+        alert("✅ Order cancelled");
+        loadOrders();
+        loadEvents();
+    } else {
+        alert(`❌ ${result.message}`);
+    }
+}
+
+async function payOrder(orderId) {
+
+    const confirmed =
+        confirm("Are you sure to pay the order?");
+
+    if (!confirmed) return;
+
+    const response = await fetch(
+        `${API_BASE}/orders/${orderId}/pay`,
+        {
+            method: "POST"
+        }
+    );
+
+    const result = await response.json();
+
+    if (response.ok) {
+
+        alert("💳 Order has been PAID!");
+
+        loadOrders();
+
+    } else {
+
+        alert(`❌ ${result.message}`);
+    }
+} 
+
+/* ---------- Start ---------- */
+
+showHomePage();
