@@ -1,11 +1,11 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  host: "localhost",
-  port: 5432,
-  user: "postgres",
-  password: "postgres",
-  database: "cloudticket",
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 5432,
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "postgres",
+  database: process.env.DB_NAME || "cloudticket",
 });
 
 pool.query("SELECT NOW()")
@@ -14,7 +14,7 @@ pool.query("SELECT NOW()")
     console.log(result.rows[0]);
   })
   .catch(err => {
-    console.error(err);
+    console.error("❌ Database connection error:", err);
   });
 
 module.exports = pool;
