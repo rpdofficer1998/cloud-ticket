@@ -25,3 +25,7 @@ yarn-error.log*
 *.tfstate
 *.tfstate.*
 crash.log
+*.pem
+
+# PostgreSQL
+cloudticket.sql
