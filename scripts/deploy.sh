@@ -5,7 +5,6 @@ set -e
 cd /home/ssm-user/cloud-ticket
 
 echo "=== Pull latest code ==="
-git pull --ff-only origin main
 
 echo "=== Build backend image ==="
 docker compose -f docker/docker-compose.yml build backend
