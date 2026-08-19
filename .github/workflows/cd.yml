@@ -26,7 +26,7 @@ jobs:
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids i-059c48b0fafd75b14 \
             --document-name AWS-RunShellScript \
-            --parameters 'commands=["cd /home/ssm-user/cloud-ticket && git -c safe.directory=/home/ssm-user/cloud-ticket pull --ff-only origin main && ./scripts/deploy.sh"]' \
+            --parameters 'commands=["sudo -u ssm-user env HOME=/home/ssm-user bash -c '\''cd /home/ssm-user/cloud-ticket && git -c safe.directory=/home/ssm-user/cloud-ticket pull --ff-only origin main && ./scripts/deploy.sh'\''"]' \
             --query "Command.CommandId" \
             --output text)
 
