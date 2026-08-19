@@ -12,6 +12,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug OIDC claims
+        shell: bash
+        run: |
+          OIDC_TOKEN=$(curl -sSf \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
+
+          PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d '.' -f 2)
+
+          # Add missing Base64 padding
+          case $((${#PAYLOAD} % 4)) in
+            2) PAYLOAD="${PAYLOAD}==" ;;
+            3) PAYLOAD="${PAYLOAD}=" ;;
+          esac
+
+          echo "$PAYLOAD" | base64 -d | jq '{sub, aud}'
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -66,4 +83,4 @@ jobs:
           done
 
           echo "SSM command did not finish within the expected time."
-          exit 1
+          exit 1       
