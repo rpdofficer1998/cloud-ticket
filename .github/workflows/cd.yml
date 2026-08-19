@@ -1,4 +1,4 @@
-name: CloudTicket CD Smoke Test
+name: CloudTicket CD
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  smoke-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids i-059c48b0fafd75b14 \
             --document-name AWS-RunShellScript \
-            --parameters 'commands=["cd /home/ssm-user/cloud-ticket && git pull --ff-only origin main && ./scripts/deploy.sh"]' \
+            --parameters 'commands=["git config --global --add safe.directory /home/ssm-user/cloud-ticket && cd /home/ssm-user/cloud-ticket && git pull --ff-only origin main && ./scripts/deploy.sh"]' \
             --query "Command.CommandId" \
             --output text)
 
