@@ -2,7 +2,7 @@
 
 set -e
 
-cd ~/cloud-ticket
+cd /home/ssm-user/cloud-ticket
 
 echo "=== Pull latest code ==="
 git pull --ff-only origin main
