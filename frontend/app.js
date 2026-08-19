@@ -91,7 +91,7 @@ async function bookTicket(eventId) {
     const result = await response.json();
 
     if (response.ok) {
-        alert("🎉 Booking Accepted!");
+        alert("🎉 Booking Accepted!\nPlease complete your payment within 3 minutes.");
         loadEvents();
     } else {
         alert(`❌ ${result.message}`);
