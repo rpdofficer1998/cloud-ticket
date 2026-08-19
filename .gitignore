@@ -29,3 +29,5 @@ crash.log
 
 # PostgreSQL
 cloudticket.sql
+github-actions-cd-policy.json
+github-actions-trust-policy.json
